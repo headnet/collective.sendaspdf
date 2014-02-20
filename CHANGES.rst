@@ -4,7 +4,8 @@ Changelog
 2.11 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Make it compatible with wkhtmltopdf 0.12.0 and improved logging on errors
+  [avoinea]
 
 
 2.10 (2014-01-20)
