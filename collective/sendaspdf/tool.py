@@ -326,12 +326,11 @@ class SendAsPDFTool(ImmutableId, ATDocument):
                     default=u'Table of content')
 
         options = {'book': self.getUse_book_style(),
-                   'toc': self.getGenerate_toc(),
                    'margin-top': self.getMargin_top(),
                    'margin-right': self.getMargin_right(),
                    'margin-bottom': self.getMargin_bottom(),
                    'margin-left': self.getMargin_left(),
-                   'toc-header-text': translate(toc_msg, context=self.REQUEST)}
+                   }
 
         ac_cookie = self.REQUEST.cookies.get('__ac', None)
         if self.getAllow_cookie() and ac_cookie is not None:
