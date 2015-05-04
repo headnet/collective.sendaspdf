@@ -12,6 +12,8 @@ from collective.sendaspdf.utils import md5_hash
 from collective.sendaspdf.utils import extract_from_url
 from collective.sendaspdf.interfaces import ISendAsPDFOptionsMaker
 
+from plone.transformchain.zpublisher import applyTransform
+
 
 class BaseView(BrowserView):
     """ Class used to factorize some code for the different views
@@ -119,7 +121,9 @@ class BaseView(BrowserView):
             # an empty string.
             view = self.context
 
-        return update_relative_url(view(), self.context)
+        body = view()
+        result = applyTransform(self.request, body=body)
+        return update_relative_url(result, self.context)
 
     def generate_temp_filename(self):
         """ Generates the filename used to store the PDF file.
