@@ -1,3 +1,6 @@
+# coding: utf-8
+from plone.i18n.normalizer import filenamenormalizer
+from Products.CMFCore.utils import getToolByName
 from collective.sendaspdf.browser.base import BaseView
 
 
@@ -16,20 +19,42 @@ class PreDownloadPDF(BaseView):
         return self.context.restrictedTraverse('@@send_as_pdf_download')()
 
 
+def convert_danish_chars(text):
+    text = text.replace('å', 'aa').replace('æ', 'ae').replace('ø', 'oe')
+    text = text.replace('Å', 'Aa').replace('Æ', 'Ae').replace('Ø', 'Oe')
+    return text
+
 class DownloadPDF(BaseView):
     """ View called when clicking the 'Click here to preview'
     link.
     """
     def generate_pdf_name(self):
         """ Generates the name for the PDF file.
-        If the context title does not contain non-ascii characters,
-        we'll use it.
-        Otherwise we'll rewrite it using normalize string.
+        Very application specific /SBW
         """
+        name = self.context.getId()
+        hastitle = False
+        if self.context.Title():
+            hastitle = True
+            name += ' - '
+            name += filenamenormalizer.normalize(convert_danish_chars(self.context.Title()))
+
         try:
-            name = self.context.title.encode('ascii')
-        except (UnicodeDecodeError, UnicodeEncodeError, ):
-            name = self.context.id
+            if self.context.answer:
+                name += ' - '
+                transforms = getToolByName(self.context, 'portal_transforms')
+                stream = transforms.convertTo('text/plain', self.context.answer.output, mimetype='text/html')
+                text = stream.getData().strip()
+                text = text.replace('\r', '')
+                text = text.replace('\n', '')
+                text = filenamenormalizer.normalize(convert_danish_chars(text))
+                if hastitle:
+                    text = text[0:60]
+                else:
+                    text = text[0:80]
+                name += text
+        except AttributeError:
+            pass
 
         return '%s.pdf' % name
 
