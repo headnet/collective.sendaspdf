@@ -18,6 +18,13 @@ else:
     wk_command = 'wkhtmltopdf'
     logger.warn("wkhtmltopdf path unknown, hope it's in the path")
 
+USE_BASIC_AUTH = False
+basicauth_user = os.environ.get('WKHTMLTOPDF_BASICAUTH_USER')
+if basicauth_user:
+    USE_BASIC_AUTH = True
+    logger.info('Using basic auth')
+    basicauth_pass = os.environ.get('WKHTMLTOPDF_BASICAUTH_PASS')
+
 simple_options = ['book', 'collate',
                   'disable-external-links', 'disable-internal-links',
                   'disable-pdf-compression', 'disable-smart-shrinking',
@@ -66,6 +73,12 @@ def html_to_pdf(source, export_dir, filename,
 
     for opt in extra_options:
         args.insert(4, opt)
+
+    if USE_BASIC_AUTH:
+        args.insert(4, basicauth_user)
+        args.insert(4, '--username')
+        args.insert(4, basicauth_pass)
+        args.insert(4, '--password')
 
     try:
         proc = subprocess.Popen(args,
