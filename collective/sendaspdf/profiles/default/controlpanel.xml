@@ -6,7 +6,7 @@
             appId="collective.sendaspdf"
             category="Plone"
             condition_expr=""
-            icon_expr="string:${portal_url}/pdf_icon.gif"
+            icon_expr="string:${portal_url}/pdf_icon.png"
             url_expr="string:${portal_url}/portal_sendaspdf"
             visible="True">
   <permission>Manage portal</permission>
