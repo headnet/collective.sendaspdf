@@ -286,6 +286,8 @@ def get_object_from_url(context, path):
 
                 except (Unauthorized, AttributeError, KeyError, ):
                     pass
+                except:
+                    return None, None, None, None
 
             # Ok, we really can't find it now.
             return None, None, None, None
